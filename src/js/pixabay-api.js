@@ -1,14 +1,12 @@
 import axios from 'axios';
 
 const BASE_URL = 'https://pixabay.com/api/';
-const API_KEY = '49710889-4feda6e3f5a5dc4aa4d4bbd5f'; // Replace with your Pixabay API key
+const API_KEY = '55782730-508b64862a8909659e50ec608';
 const PER_PAGE = 15;
 
 /**
- * Fetch images from Pixabay by search query and page number.
- * @param {string} query - Search keyword
- * @param {number} page  - Page number (starts at 1)
- * @returns {Promise<{hits: Array, totalHits: number}>}
+ * @param {string} query
+ * @param {number} page
  */
 export async function getImagesByQuery(query, page) {
   const response = await axios.get(BASE_URL, {

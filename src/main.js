@@ -1,3 +1,6 @@
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
+
 import { getImagesByQuery } from './js/pixabay-api.js';
 import {
   createGallery,
@@ -8,29 +11,23 @@ import {
   hideLoadMoreButton,
 } from './js/render-functions.js';
 
-// ── State ──────────────────────────────────────────────────────────────
+// ── Стан ──────────────────────────────────────────────────────────────
 const PER_PAGE = 15;
 
 let currentQuery = '';
 let currentPage = 1;
 let totalHits = 0;
 
-// ── DOM refs ───────────────────────────────────────────────────────────
+// ── DOM ───────────────────────────────────────────────────────────────
 const form = document.getElementById('search-form');
 const loadMoreBtn = document.getElementById('load-more-btn');
 
-// ── iziToast helpers ───────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────
 function toastError(message) {
   iziToast.error({
     message,
     position: 'topRight',
-    backgroundColor: '#13131a',
-    messageColor: '#f0f0f5',
-    iconColor: '#ff6b35',
-    progressBarColor: '#ff6b35',
-    titleColor: '#ff6b35',
     timeout: 4000,
-    balloon: false,
   });
 }
 
@@ -38,16 +35,10 @@ function toastInfo(message) {
   iziToast.info({
     message,
     position: 'topRight',
-    backgroundColor: '#13131a',
-    messageColor: '#f0f0f5',
-    iconColor: '#e8ff47',
-    progressBarColor: '#e8ff47',
     timeout: 4000,
-    balloon: false,
   });
 }
 
-// ── Scroll helper ──────────────────────────────────────────────────────
 function smoothScrollAfterLoad() {
   const firstCard = document.querySelector('.gallery-item');
   if (!firstCard) return;
@@ -55,15 +46,17 @@ function smoothScrollAfterLoad() {
   window.scrollBy({ top: cardHeight * 2, behavior: 'smooth' });
 }
 
-// ── Check whether we've reached the end of results ─────────────────────
 function isEndOfCollection() {
   return currentPage * PER_PAGE >= totalHits;
 }
 
-// ── Fetch and render a page of results ────────────────────────────────
+// ── Основна логіка ────────────────────────────────────────────────────
 async function fetchAndRender(isNewSearch = false) {
   showLoader();
-  if (isNewSearch) hideLoadMoreButton();
+
+  if (isNewSearch) {
+    hideLoadMoreButton();
+  }
 
   try {
     const data = await getImagesByQuery(currentQuery, currentPage);
@@ -75,7 +68,6 @@ async function fetchAndRender(isNewSearch = false) {
       clearGallery();
 
       if (hits.length === 0) {
-        hideLoader();
         toastError(
           'Sorry, there are no images matching your search query. Please try again!'
         );
@@ -85,12 +77,10 @@ async function fetchAndRender(isNewSearch = false) {
 
     createGallery(hits);
 
-    // Scroll after loading additional pages (not the very first page)
     if (!isNewSearch) {
       smoothScrollAfterLoad();
     }
 
-    // Decide whether to show the Load more button or end-of-collection notice
     if (isEndOfCollection()) {
       hideLoadMoreButton();
       toastInfo("We're sorry, but you've reached the end of search results.");
@@ -106,7 +96,7 @@ async function fetchAndRender(isNewSearch = false) {
   }
 }
 
-// ── Form submit — new search ──────────────────────────────────────────
+// ── Події ─────────────────────────────────────────────────────────────
 form.addEventListener('submit', async event => {
   event.preventDefault();
 
@@ -117,7 +107,6 @@ form.addEventListener('submit', async event => {
     return;
   }
 
-  // Reset state for new search
   currentQuery = query;
   currentPage = 1;
   totalHits = 0;
@@ -125,7 +114,6 @@ form.addEventListener('submit', async event => {
   await fetchAndRender(true);
 });
 
-// ── Load more button ──────────────────────────────────────────────────
 loadMoreBtn.addEventListener('click', async () => {
   currentPage += 1;
   await fetchAndRender(false);
