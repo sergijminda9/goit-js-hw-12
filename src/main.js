@@ -11,32 +11,21 @@ import {
   hideLoadMoreButton,
 } from './js/render-functions.js';
 
-// ── Стан ──────────────────────────────────────────────────────────────
 const PER_PAGE = 15;
 
 let currentQuery = '';
 let currentPage = 1;
 let totalHits = 0;
 
-// ── DOM ───────────────────────────────────────────────────────────────
 const form = document.getElementById('search-form');
 const loadMoreBtn = document.getElementById('load-more-btn');
 
-// ── Helpers ───────────────────────────────────────────────────────────
 function toastError(message) {
-  iziToast.error({
-    message,
-    position: 'topRight',
-    timeout: 4000,
-  });
+  iziToast.error({ message, position: 'topRight', timeout: 4000 });
 }
 
 function toastInfo(message) {
-  iziToast.info({
-    message,
-    position: 'topRight',
-    timeout: 4000,
-  });
+  iziToast.info({ message, position: 'topRight', timeout: 4000 });
 }
 
 function smoothScrollAfterLoad() {
@@ -50,29 +39,26 @@ function isEndOfCollection() {
   return currentPage * PER_PAGE >= totalHits;
 }
 
-// ── Основна логіка ────────────────────────────────────────────────────
 async function fetchAndRender(isNewSearch = false) {
+  // ДО запиту — ховаємо кнопку і лоадер
+  hideLoadMoreButton();
   showLoader();
 
+  // ДО запиту — очищаємо галерею при новому пошуку
   if (isNewSearch) {
-    hideLoadMoreButton();
+    clearGallery();
   }
 
   try {
     const data = await getImagesByQuery(currentQuery, currentPage);
-
     totalHits = data.totalHits;
     const hits = data.hits;
 
-    if (isNewSearch) {
-      clearGallery();
-
-      if (hits.length === 0) {
-        toastError(
-          'Sorry, there are no images matching your search query. Please try again!'
-        );
-        return;
-      }
+    if (hits.length === 0) {
+      toastError(
+        'Sorry, there are no images matching your search query. Please try again!'
+      );
+      return;
     }
 
     createGallery(hits);
@@ -88,7 +74,6 @@ async function fetchAndRender(isNewSearch = false) {
       showLoadMoreButton();
     }
   } catch (err) {
-    hideLoadMoreButton();
     toastError('Something went wrong. Please try again later.');
     console.error(err);
   } finally {
@@ -96,21 +81,16 @@ async function fetchAndRender(isNewSearch = false) {
   }
 }
 
-// ── Події ─────────────────────────────────────────────────────────────
 form.addEventListener('submit', async event => {
   event.preventDefault();
-
   const query = event.currentTarget.elements.query.value.trim();
-
   if (!query) {
     toastError('Please enter a search term.');
     return;
   }
-
   currentQuery = query;
   currentPage = 1;
   totalHits = 0;
-
   await fetchAndRender(true);
 });
 
