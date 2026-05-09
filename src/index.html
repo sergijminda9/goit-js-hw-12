@@ -1,23 +1,75 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vanilla App Template</title>
+    <title>PixSearch — Image Gallery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/2.14.2/simple-lightbox.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css"
+    />
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
-    <load src="./partials/header.html" icon-path="img/sprite.svg#logo" />
+    <header class="site-header">
+      <div class="header-inner">
+        <span class="logo">PIX<em>SEARCH</em></span>
+        <p class="tagline">millions of free images, one search away</p>
+      </div>
+    </header>
 
-    <main>
-      <!-- Loads the specified .html file -->
-      <load src="./partials/vite-promo.html" />
-      <load src="./partials/badges.html" />
+    <main class="main-content">
+      <section class="search-section">
+        <form class="search-form" id="search-form">
+          <div class="input-wrap">
+            <svg
+              class="search-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              type="text"
+              name="query"
+              class="search-input"
+              placeholder="Search for anything…"
+              autocomplete="off"
+            />
+          </div>
+          <button type="submit" class="btn-search">Search</button>
+        </form>
+      </section>
+
+      <div class="gallery-container">
+        <ul class="gallery" id="gallery"></ul>
+      </div>
+
+      <div class="controls">
+        <button class="btn-load-more hidden" id="load-more-btn">
+          Load more
+        </button>
+        <div class="loader hidden" id="loader">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
     </main>
 
-    <load src="./partials/footer.html" />
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/2.14.2/simple-lightbox.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
     <script type="module" src="./main.js"></script>
   </body>
 </html>
